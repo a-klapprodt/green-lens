@@ -5,17 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Green Lens</title>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body{
-font-family:system-ui,Arial,sans-serif;
+font-family: system-ui, Arial, sans-serif;
 margin:0;
 background:linear-gradient(to bottom right,#f0fdf4,#dbeafe);
+padding:40px;
 }
 
 .container{
-max-width:1100px;
+max-width:900px;
 margin:auto;
-padding:40px;
 }
 
 header{
@@ -24,62 +26,41 @@ margin-bottom:40px;
 }
 
 h1{
-font-size:3rem;
+font-size:48px;
 color:#14532d;
 margin-bottom:10px;
 }
 
 p{
 color:#374151;
-font-size:1.1rem;
-max-width:700px;
-margin:auto;
+font-size:18px;
 }
 
 .card{
 background:white;
-border-radius:16px;
 padding:30px;
+border-radius:16px;
 box-shadow:0 10px 25px rgba(0,0,0,0.1);
 margin-top:30px;
 }
 
-.slider-container{
-max-width:700px;
-margin:40px auto;
-}
-
 label{
 font-weight:600;
-font-size:1.2rem;
 display:block;
 margin-bottom:10px;
+font-size:18px;
 }
 
-input[type="range"]{
+input[type=range]{
 width:100%;
 }
 
-.chart{
-height:400px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:1.2rem;
-color:#555;
-border:2px dashed #ccc;
-border-radius:10px;
-}
-
 .warning{
-margin-top:20px;
-padding:15px;
+margin-top:15px;
+padding:10px;
+border-left:4px solid #15803d;
 background:#dcfce7;
-border-left:5px solid #15803d;
-border-radius:6px;
-color:#14532d;
 }
-
 </style>
 </head>
 
@@ -89,19 +70,17 @@ color:#14532d;
 
 <header>
 <h1>The Green Lens</h1>
-
 <p>
-Rainfall-induced slope instability is driven by increased pore water pressure,
-reducing effective stress and shear strength. This dashboard visualizes how
+Rainfall-induced slope instability occurs when increased pore water pressure
+reduces effective stress and shear strength. This dashboard visualizes how
 rainfall influences the Factor of Safety over time.
 </p>
 </header>
 
+<div class="card">
 
-<div class="slider-container">
 <label>
-Factor of Safety Threshold:
-<span id="thresholdValue">1.3</span>
+Factor of Safety Threshold: <span id="thresholdValue">1.30</span>
 </label>
 
 <input
@@ -111,34 +90,68 @@ max="2"
 step="0.01"
 value="1.3"
 id="thresholdSlider"
->
+/>
+
+<div class="warning">
+Green zone = stable slope conditions.  
+Values below the threshold indicate potential instability.
 </div>
 
+</div>
 
 <div class="card">
 
-<div class="chart">
-Factor of Safety Time-Series Chart Placeholder
-</div>
-
-<div class="warning">
-If the Factor of Safety falls below the threshold, slope failure risk increases.
-Monitoring rainfall intensity and pore pressure helps anticipate instability.
-</div>
+<canvas id="fsChart"></canvas>
 
 </div>
 
 </div>
-
 
 <script>
 
-const slider = document.getElementById("thresholdSlider");
-const value = document.getElementById("thresholdValue");
+const dates = [
+"Feb 10","Feb 11","Feb 12","Feb 13","Feb 14",
+"Feb 15","Feb 16","Feb 17","Feb 18","Feb 19"
+]
 
-slider.addEventListener("input", function(){
-value.textContent = slider.value;
-});
+const factorSafety = [
+1.62,1.59,1.55,1.52,1.48,
+1.46,1.42,1.39,1.34,1.30
+]
+
+const ctx = document.getElementById("fsChart")
+
+const chart = new Chart(ctx,{
+type:"line",
+data:{
+labels:dates,
+datasets:[{
+label:"Factor of Safety",
+data:factorSafety,
+borderWidth:3,
+tension:0.3
+}]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{display:true}
+},
+scales:{
+y:{
+min:0.8,
+max:2
+}
+}
+}
+})
+
+const slider=document.getElementById("thresholdSlider")
+const valueLabel=document.getElementById("thresholdValue")
+
+slider.addEventListener("input",()=>{
+valueLabel.textContent=parseFloat(slider.value).toFixed(2)
+})
 
 </script>
 
