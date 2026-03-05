@@ -8,10 +8,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+
 body{
-font-family: system-ui, Arial, sans-serif;
+font-family: Arial, sans-serif;
 margin:0;
-background:linear-gradient(to bottom right,#f0fdf4,#dbeafe);
+background: linear-gradient(to bottom right,#f0fdf4,#dbeafe);
 padding:40px;
 }
 
@@ -28,7 +29,6 @@ margin-bottom:40px;
 h1{
 font-size:48px;
 color:#14532d;
-margin-bottom:10px;
 }
 
 p{
@@ -55,12 +55,6 @@ input[type=range]{
 width:100%;
 }
 
-.warning{
-margin-top:15px;
-padding:10px;
-border-left:4px solid #15803d;
-background:#dcfce7;
-}
 </style>
 </head>
 
@@ -92,22 +86,19 @@ value="1.3"
 id="thresholdSlider"
 />
 
-<div class="warning">
-Green zone = stable slope conditions.  
-Values below the threshold indicate potential instability.
-</div>
-
 </div>
 
 <div class="card">
 
-<canvas id="fsChart"></canvas>
+<canvas id="fsChart" height="120"></canvas>
 
 </div>
 
 </div>
 
 <script>
+
+window.onload = function(){
 
 const dates = [
 "Feb 10","Feb 11","Feb 12","Feb 13","Feb 14",
@@ -119,9 +110,9 @@ const factorSafety = [
 1.46,1.42,1.39,1.34,1.30
 ]
 
-const ctx = document.getElementById("fsChart")
+const ctx = document.getElementById("fsChart").getContext("2d")
 
-const chart = new Chart(ctx,{
+new Chart(ctx,{
 type:"line",
 data:{
 labels:dates,
@@ -134,9 +125,6 @@ tension:0.3
 },
 options:{
 responsive:true,
-plugins:{
-legend:{display:true}
-},
 scales:{
 y:{
 min:0.8,
@@ -152,6 +140,8 @@ const valueLabel=document.getElementById("thresholdValue")
 slider.addEventListener("input",()=>{
 valueLabel.textContent=parseFloat(slider.value).toFixed(2)
 })
+
+}
 
 </script>
 
